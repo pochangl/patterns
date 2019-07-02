@@ -59,7 +59,3 @@ class TestMetaOption(unittest.TestCase):
             class Child(Base):
                 pass
         self.assertEqual(context.exception.args[0], 'Child.run is not defined')
-
-
-if __name__ == '__main__':
-    unitest.main()
