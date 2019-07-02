@@ -1,0 +1,8 @@
+version: '3.2'
+services:
+  test:
+    image: python:3.6
+    command: bash /test.sh
+    volumes:
+      - ./:/patterns
+      - ./scripts/test.sh:/test.sh
