@@ -42,3 +42,6 @@ class Pipeline(six.with_metaclass(PipelineMetaOption)):
         data = data1.copy()
         data.update(data2)
         return data
+
+    def __call__(self, **kwargs):
+        return self.run(**kwargs)

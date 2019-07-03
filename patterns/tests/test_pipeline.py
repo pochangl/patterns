@@ -11,13 +11,13 @@ class SetStep(Step):
 
 
 class Step1(SetStep):
-    def run(self):
-        return set([1])
+    def run(self, offset=0):
+        return set([1 + offset])
 
 
 class Step2(SetStep):
-    def run(self):
-        return set([2])
+    def run(self, offset=0):
+        return set([2 + offset])
 
 
 class SetPipeline(Pipeline):
@@ -28,8 +28,8 @@ class SetPipeline(Pipeline):
 
 
 class OtherStep(Step):
-    def run(self):
-        return set([3])
+    def run(self, offset=0):
+        return set([3 + offset])
 
 
 class TestStep(TestCase):
@@ -89,6 +89,20 @@ class TestPipeline(TestCase):
         pipeline.register(Step2)
         data = pipeline.run()
         self.assertSetEqual(set([1, 2]), data)
+
+    def test_kwargs(self):
+        pipeline = SetPipeline()
+        pipeline.register(Step1)
+        pipeline.register(Step2)
+        data = pipeline.run(offset=10)
+        self.assertSetEqual(set([11, 12]), data)
+
+    def test_call(self):
+        pipeline = SetPipeline()
+        pipeline.register(Step1)
+        pipeline.register(Step2)
+        data = pipeline(offset=10)
+        self.assertSetEqual(set([11, 12]), data)
 
     def test_register_other_step(self):
         pipeline = SetPipeline()
