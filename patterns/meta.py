@@ -12,6 +12,10 @@ def assert_callable(cls, name):
     assert callable(getattr(cls, name)), '%s.%s is not callable' % (cls.__name__, name)
 
 
+def assert_subclass(cls, base):
+    assert issubclass(cls, base), '%s is not subclass of %s' % (cls.__name__, base.__name__)
+
+
 class MetaOption(type):
     def validate_meta_class(cls):
         pass

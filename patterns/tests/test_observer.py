@@ -1,3 +1,4 @@
+import types
 from unittest import TestCase
 from ..observer import Observer, Subject
 
@@ -149,3 +150,37 @@ class TestMixedObserverSubject(TestCase):
         with self.assertRaises(AssertionError) as context:
             subject.register(other)
         self.assertEqual(context.exception.args[0], 'OtherObserver object is not a instance of CounterObserver')
+
+
+class TestSubjectregisterDecorator(TestCase):
+    def setUp(self):
+        self.set = set()
+        self.subject = subject = CounterSubject()
+
+        @subject.register
+        def func(value):
+            v = value + 1
+            self.set.add(v)
+            return v
+
+        self.func = func
+
+    def test_register(self):
+        func = self.func
+        subject = self.subject
+
+        self.assertIsInstance(func, types.FunctionType)
+        self.assertSetEqual(subject.observers, set([func]))
+
+    def test_notify(self):
+        self.assertSetEqual(self.set, set())
+        self.subject.notify(3)
+        self.assertSetEqual(self.set, set([4]))
+
+    def test_still_function(self):
+        # make sure it still works like function
+        self.assertEqual(self.func(3), 4)
+
+    def test_unregister(self):
+        self.subject.unregister(self.func)
+        self.assertSetEqual(self.subject.observers, set())

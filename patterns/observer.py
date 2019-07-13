@@ -1,8 +1,10 @@
+import functools
+import types
 import six
-from .meta import MetaOption, assert_meta_subclass, assert_callable, assert_instance
+from .meta import MetaOption, assert_meta_subclass, assert_callable, assert_instance, assert_subclass
 
 
-__all__ = ['ObserverMetaOption', 'Observer', 'SubjectMetaOption', 'Subject']
+__all__ = ['ObserverMetaOption', 'Observer', 'FunctionObserver', 'SubjectMetaOption', 'Subject']
 
 
 class ObserverMetaOption(MetaOption):
@@ -27,13 +29,17 @@ class SubjectMetaOption(MetaOption):
 
 
 class Subject(six.with_metaclass(SubjectMetaOption)):
+    observers = None
+
     def __init__(self):
         super().__init__()
         self.observers = set()
 
     def register(self, observer):
-        assert_instance(inst=observer, base=self._meta.observer)
+        if not isinstance(observer, types.FunctionType):
+            assert_instance(inst=observer, base=self._meta.observer)
         self.observers.add(observer)
+        return observer
 
     def unregister(self, observer):
         self.observers.remove(observer)
