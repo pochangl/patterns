@@ -1,3 +1,17 @@
+def assert_meta_subclass(cls, name, base):
+    assert hasattr(cls._meta, name), '%s.Meta.%s is not defined' % (cls.__name__, name)
+    assert issubclass(getattr(cls._meta, name), base), '%s.Meta.%s is not subclass of %s' % (cls.__name__, name, base.__name__)
+
+
+def assert_instance(inst, base):
+    assert isinstance(inst, base), '%s object is not a instance of %s' % (inst.__class__.__name__, base.__name__)
+
+
+def assert_callable(cls, name):
+    assert hasattr(cls, name), '%s.%s is not defined' % (cls.__name__, name)
+    assert callable(getattr(cls, name)), '%s.%s is not callable' % (cls.__name__, name)
+
+
 class MetaOption(type):
     def validate_meta_class(cls):
         pass

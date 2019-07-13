@@ -1,11 +1,10 @@
 import six
-from .meta import MetaOption
+from .meta import MetaOption, assert_meta_subclass, assert_callable
 
 
 class StepMetaOption(MetaOption):
     def validate_meta_class(cls):
-        assert hasattr(cls, 'run'), '%s.run is not defined' % cls.__name__
-        assert callable(cls.run), '%s.run is not callable' % cls.__name__
+        assert_callable(cls, 'run')
 
 
 class Step(six.with_metaclass(StepMetaOption)):
@@ -15,8 +14,7 @@ class Step(six.with_metaclass(StepMetaOption)):
 
 class PipelineMetaOption(MetaOption):
     def validate_meta_class(cls):
-        assert hasattr(cls._meta, 'step'), '%s.Meta.step is not defined' % cls.__name__
-        assert issubclass(cls._meta.step, Step), '%s.Meta.step is not subclass of %s' % (cls.__name__, Step.__name__)
+        assert_meta_subclass(cls=cls, name='step', base=Step)
 
 
 class Pipeline(six.with_metaclass(PipelineMetaOption)):
