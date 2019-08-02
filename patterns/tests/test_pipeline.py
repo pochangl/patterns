@@ -110,3 +110,11 @@ class TestPipeline(TestCase):
         with self.assertRaises(AssertionError) as context:
             pipeline.register(OtherStep)
         self.assertEqual(context.exception.args[0], 'OtherStep is not a subclass of SetStep')
+
+    def test_iteration(self):
+        pipeline = SetPipeline()
+        pipeline.register(Step1)
+        pipeline.register(Step2)
+        step1, step2 = list(pipeline)
+
+        self.assertEqual([step1, step2], pipeline.steps)

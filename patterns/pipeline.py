@@ -18,7 +18,8 @@ class PipelineMetaOption(MetaOption):
 
 
 class Pipeline(six.with_metaclass(PipelineMetaOption)):
-    steps = []
+    def __init__(self):
+        self.steps = []
 
     def register(self, step):
         base = self._meta.step
@@ -28,9 +29,13 @@ class Pipeline(six.with_metaclass(PipelineMetaOption)):
         self.steps.append(instance)
         instance.initialize()
 
+    def __iter__(self):
+        for step in self.steps:
+            yield step
+
     def run(self, **kwargs):
         data = self.get_initial_data()
-        for step in self.steps:
+        for step in self:
             new_data = step.run(**kwargs)
             if new_data:
                 data = self.merge_data(data, new_data)
